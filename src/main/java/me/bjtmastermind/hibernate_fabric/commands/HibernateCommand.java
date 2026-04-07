@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.MinecraftServer;
 
@@ -42,7 +43,7 @@ public class HibernateCommand {
                 Component.literal("Cannot hibernate while players are online! (" +
                     server.getPlayerCount() + " connected player" +
                     (server.getPlayerCount() == 1 ? ")" : "s)")
-                ).withColor(TextColor.fromLegacyFormat(ChatFormatting.RED).getValue())
+                ).setStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.RED)))
             );
             return 0;
         }

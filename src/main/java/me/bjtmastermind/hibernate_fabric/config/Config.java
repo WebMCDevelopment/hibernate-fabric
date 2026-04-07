@@ -39,10 +39,10 @@ public class Config {
     public static int gcIntervalSeconds = 30;
     public static boolean saveBeforeHibernation = true;
     public static List<ResourceLocation> removeEntities = List.of(
-        ResourceLocation.parse("minecraft:item"),
-        ResourceLocation.parse("minecraft:firework_rocket"),
-        ResourceLocation.parse("minecraft:arrow"),
-        ResourceLocation.parse("minecraft:experience_orb")
+        ResourceLocation.tryParse("minecraft:item"),
+        ResourceLocation.tryParse("minecraft:firework_rocket"),
+        ResourceLocation.tryParse("minecraft:arrow"),
+        ResourceLocation.tryParse("minecraft:experience_orb")
     );
     public static int droppedItemMaxAgeSeconds = 300;
     public static boolean logMemoryUsage = true;
@@ -168,7 +168,7 @@ public class Config {
         List<ResourceLocation> removeEntities = new ArrayList<>();
 
         for (JsonElement element : removeEntitiesArray) {
-            ResourceLocation entityId = ResourceLocation.parse(element.getAsString());
+            ResourceLocation entityId = ResourceLocation.tryParse(element.getAsString());
 
             if (BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)) {
                 removeEntities.add(entityId);

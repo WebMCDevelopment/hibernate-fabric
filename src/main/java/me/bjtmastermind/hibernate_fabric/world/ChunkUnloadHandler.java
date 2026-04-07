@@ -9,15 +9,14 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 
 public class ChunkUnloadHandler {
 
     public static void register() {
-        ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((level, chunk, oldLevelType, newLevelType) -> {
-            if (Config.enableMemoryOptimization && newLevelType.equals(FullChunkStatus.INACCESSIBLE)) {
+        ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
+            if (Config.enableMemoryOptimization) {
                 ChunkPos chunkPos = chunk.getPos();
 
                 List<Entity> entities = new ArrayList<>();
@@ -37,7 +36,7 @@ public class ChunkUnloadHandler {
                         "{} inactive entities removed from chunk ({},{}) in dimension {}",
                         entitiesToRemove.size(),
                         chunkPos.x, chunkPos.z,
-                        level.dimensionTypeRegistration().getRegisteredName()
+                        level.dimension().location()
                     );
                 }
             }
@@ -52,8 +51,8 @@ public class ChunkUnloadHandler {
     private static boolean canEntityBeRemovedDuringHibernation(Entity entity) {
         ResourceLocation entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
 
-        if (Config.removeEntities.contains(ResourceLocation.parse("minecraft:item")) &&
-            entityId.equals(ResourceLocation.parse("minecraft:item")))
+        if (Config.removeEntities.contains(ResourceLocation.tryParse("minecraft:item")) &&
+            entityId.equals(ResourceLocation.tryParse("minecraft:item")))
         {
             return entity.tickCount >= (Config.droppedItemMaxAgeSeconds * 20);
         } else {
